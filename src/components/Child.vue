@@ -1,9 +1,5 @@
 <template>
-  <transition name="fade">
-    <slot>
-      <router-view v-if="true"/>
-    </slot>
-  </transition>
+  <router-view v-if="true"/>
 </template>
 
 <script>
@@ -11,7 +7,3 @@ export default {
   name: 'Child'
 }
 </script>
-
-<style scoped>
-
-</style>

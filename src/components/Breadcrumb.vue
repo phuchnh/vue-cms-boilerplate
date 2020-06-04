@@ -18,7 +18,8 @@ export default {
   },
   computed: {
     breadcrumbs () {
-      return [...this.defaultValue, ...this.$route.meta.breadcrumbs]
+      const breadcrumbs = this.$route.meta.breadcrumbs || []
+      return [...this.defaultValue, ...breadcrumbs]
     }
   },
   methods: {

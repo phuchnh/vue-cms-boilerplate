@@ -4,7 +4,7 @@
       <div class="row align-items-center">
         <div class="col-auto">
           <h2 class="page-title">
-            Dashboard
+            {{title}}
           </h2>
         </div>
         <!-- Page title actions -->
@@ -15,23 +15,28 @@
         </div>
       </div>
     </div>
-    <slot>
-      <router-view v-if="true"/>
-    </slot>
+    <transition name="fade" mode="out-in">
+      <router-view/>
+    </transition>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb'
+import last from 'lodash-es/last'
 
 export default {
   name: 'Resource',
   components: {
     Breadcrumb
+  },
+  computed: {
+    title () {
+      return last(this.$route.meta.breadcrumbs).title
+    }
   }
 }
 </script>
 
-<style scoped>
-
+<style scoped type="scss">
 </style>

@@ -29,10 +29,7 @@
             </div>
           </div>
           <div class="form-footer">
-            <button :disabled="$v.form.$invalid || isSubmit" class="btn btn-primary btn-block"
-                    type="submit"
-            >Sign in
-            </button>
+            <button :disabled="$v.form.$invalid || isSubmit" class="btn btn-primary btn-block" type="submit">Sign in</button>
           </div>
         </div>
       </form>
@@ -43,7 +40,8 @@
 <script>
 import { EyeIcon } from 'vue-feather-icons'
 import { required } from 'vuelidate/lib/validators'
-import { SET_IS_LOGGED_IN, SET_PROFILE } from '@/store/mutation-types'
+import * as types from '@/store/mutation-types'
+import store from '@/store'
 import Admin from '@/models/Admin'
 
 export default {
@@ -68,7 +66,7 @@ export default {
     }
   },
   created () {
-    localStorage.removeItem('token')
+    store.commit(types.LOG_OUT)
   },
   methods: {
     async login () {
@@ -81,24 +79,18 @@ export default {
 
       try {
         const { token } = await Admin.login(this.$v.form.$model)
-        if (token) {
-          localStorage.setItem('token', token)
-          this.$store.commit(SET_IS_LOGGED_IN, true)
-        }
+        this.$store.commit(types.SET_TOKEN, { token })
         const profile = await Admin.profile()
-        if (profile) {
-          this.$store.commit(SET_PROFILE, profile)
-        }
+        this.$store.commit(types.SET_PROFILE, { profile })
         await this.$router.push({ name: 'home' })
       } catch (e) {
         this.isSubmit = false
-        throw e
       }
     },
     fieldState (validation) {
       return {
-        'is-invalid': validation.$error && validation.$dirty,
-        'is-valid': !validation.$invalid
+        'is-invalid is-invalid-lite': validation.$error && validation.$dirty,
+        'is-valid is-valid-lite': !validation.$invalid
       }
     }
   }

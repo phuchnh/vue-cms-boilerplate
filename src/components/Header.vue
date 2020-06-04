@@ -60,8 +60,8 @@
 <script>
 import { BellIcon, LogOutIcon } from 'vue-feather-icons'
 import store from '@/store'
-import { SET_IS_LOGGED_IN, SET_PROFILE } from '@/store/mutation-types'
-import Admin from '../models/Admin'
+import * as types from '@/store/mutation-types'
+import Admin from '@/models/Admin'
 
 export default {
   name: 'Header',
@@ -71,10 +71,10 @@ export default {
   },
   methods: {
     async logout () {
-      await Admin.logout()
-      store.commit(SET_IS_LOGGED_IN, false)
-      store.commit(SET_PROFILE, null)
-      localStorage.removeItem('token')
+      try {
+        await Admin.logout()
+      } catch (e) {}
+      store.commit(types.LOG_OUT)
       await this.$router.push({ name: 'login' })
     }
   }

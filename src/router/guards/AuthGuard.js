@@ -1,15 +1,15 @@
 import Admin from '@/models/Admin'
 import store from '@/store'
-import { SET_PROFILE } from '@/store/mutation-types'
+import * as types from '@/store/mutation-types'
 import isEmpty from 'lodash-es/isEmpty'
 
 export const AuthGuard = async (to, from, next) => {
-  if (store.getters.currentUser) {
+  if (store.getters.profile) {
     next()
     return
   }
 
-  if (!store.getters.isLoggedIn) {
+  if (!store.getters.hasToken) {
     next({ name: 'login' })
     return
   }
@@ -20,9 +20,10 @@ export const AuthGuard = async (to, from, next) => {
       next({ name: 'login' })
       return
     }
-    store.commit(SET_PROFILE, profile)
+    store.commit(types.SET_PROFILE, { profile })
     next()
   } catch (e) {
+    store.commit(types.LOG_OUT)
     next({ name: 'login' })
     throw e
   }

@@ -17,9 +17,6 @@
       sort-icon-left
       hover
     >
-      <template v-slot:cell()="data">
-        <slot name="test1" v-bind:test1="data"/>
-      </template>
       <template v-slot:empty="scope">
         <div class="empty">
           <div class="empty-icon">

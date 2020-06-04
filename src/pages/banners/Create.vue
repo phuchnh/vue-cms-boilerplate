@@ -1,6 +1,5 @@
 <template>
   <div id="CreateBanner">
-    <h1>CreateBanner</h1>
     <Form/>
   </div>
 </template>

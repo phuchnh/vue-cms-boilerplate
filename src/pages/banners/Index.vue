@@ -16,9 +16,6 @@
       :sort-value="sortDesc"
       :is-loading="isLoading"
     >
-      <template v-slot:test1="data">
-        <h1>{{data.item.title}}</h1>
-      </template>
     </StandardTable>
   </div>
 </template>

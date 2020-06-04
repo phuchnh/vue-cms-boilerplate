@@ -1,21 +1,38 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import actions from './actions'
-import mutations from './mutations'
-import getters from './getters'
-import isEmpty from 'lodash-es/isEmpty'
+import * as types from './mutation-types'
+import Cookie from 'js-cookie'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-    layout: 'default',
-    auth: {
-      isLoggedIn: !isEmpty(localStorage.getItem('token')),
-      profile: null
+  state () {
+    return {
+      layout: 'default',
+      profile: null,
+      token: Cookie.get('token')
     }
   },
-  getters,
-  mutations,
-  actions
+  getters: {
+    profile: state => state.profile,
+    hasToken: state => state.token,
+    layout: state => state.layout || 'default'
+  },
+  mutations: {
+    [types.SET_LAYOUT] (state, { layout }) {
+      state.layout = layout
+    },
+    [types.SET_PROFILE] (state, { profile }) {
+      state.profile = profile
+    },
+    [types.SET_TOKEN] (state, { token }) {
+      state.token = token
+      Cookie.set('token', token)
+    },
+    [types.LOG_OUT] (state) {
+      state.token = null
+      state.profile = null
+      Cookie.remove('token')
+    }
+  }
 })

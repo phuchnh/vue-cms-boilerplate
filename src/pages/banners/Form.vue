@@ -2,24 +2,24 @@
   <div id="BannerForm">
     <div class="mb-3">
       <label class="form-label">title</label>
-      <input :class="fieldStatus($v.form.title)" class="form-control" type="text" v-model="$v.form.title.$model">
+      <input :class="fieldState($v.form.title)" class="form-control" type="text" v-model.trim="$v.form.title.$model">
     </div>
     <div class="mb-3">
       <label class="form-label">publish_start_datetime</label>
-      <input :class="fieldStatus($v.form.publish_start_datetime)" class="form-control" type="text"
-             v-model="$v.form.publish_start_datetime.$model"
+      <input :class="fieldState($v.form.publish_start_datetime)" class="form-control" type="text"
+        v-model.trim="$v.form.publish_start_datetime.$model"
       >
     </div>
     <div class="mb-3">
       <label class="form-label">publish_end_datetime</label>
-      <input :class="fieldStatus($v.form.publish_end_datetime)" class="form-control" type="text"
-             v-model="$v.form.publish_end_datetime.$model"
+      <input :class="fieldState($v.form.publish_end_datetime)" class="form-control" type="text"
+        v-model.trim="$v.form.publish_end_datetime.$model"
       >
     </div>
     <div class="mb-3">
       <label class="form-label">display_type</label>
-      <input :class="fieldStatus($v.form.publish_end_datetime)" class="form-control" type="text"
-             v-model="$v.form.display_type.$model"
+      <input :class="fieldState($v.form.display_type)" class="form-control" type="text"
+        v-model.trim="$v.form.display_type.$model"
       >
     </div>
     <div class="mb-3">
@@ -61,17 +61,18 @@ export default {
       publish_start_datetime: { required },
       publish_end_datetime: { required },
       display_type: { required },
-      is_preview: {},
-      is_active: {}
+      is_preview: { required },
+      is_active: { required }
     }
   },
   created () {
-    this.form = this.value || {}
+    // Fill data form
+    this.form = Object.assign(this.form, this.value)
   },
   methods: {
-    fieldStatus (validation) {
+    fieldState (validation) {
       return {
-        'is-invalid is-invalid-lite': validation.$invalid && validation.$dirty,
+        'is-invalid is-invalid-lite': validation.$error && validation.$dirty,
         'is-valid is-valid-lite': !validation.$invalid
       }
     }
@@ -79,6 +80,5 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped type="scss">
 </style>

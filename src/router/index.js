@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import { routes } from '@/router/routes'
 import store from '@/store'
 import head from 'lodash-es/head'
-import { SET_LAYOUT } from '@/store/mutation-types'
+import * as types from '@/store/mutation-types'
 
 Vue.use(Router)
 
@@ -22,7 +22,7 @@ const router = new Router({
  */
 const beforeEach = async (to, from, next) => {
   const currentRoute = head(to.matched)
-  store.commit(SET_LAYOUT, currentRoute.meta.layout)
+  store.commit(types.SET_LAYOUT, { layout: currentRoute.meta.layout })
   router.app.$Progress.start()
   next()
 }
@@ -33,8 +33,9 @@ const beforeEach = async (to, from, next) => {
  * @returns {Promise<void>}
  */
 const afterEach = async () => {
-  document.getElementById('loading').style.display = 'none'
   router.app.$Progress.finish()
+  await router.app.$nextTick()
+  document.getElementById('loading').style.display = 'none'
 }
 
 router.beforeEach(beforeEach)
