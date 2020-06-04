@@ -37,7 +37,10 @@ export default {
         pageSizeOptions: this.pageSizeOptions,
         total: this.total,
         current: this.currentPage,
-        pageSize: this.perPage
+        defaultPageSize: this.perPage,
+        pageSize: this.perPage,
+        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+        buildOptionText: (pageSize) => `${pageSize.value} / page`
       }
     }
   },

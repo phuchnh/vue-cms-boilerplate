@@ -61,7 +61,6 @@
 import Banner from '@/models/Banner'
 import Search from './Search'
 import StandardTable from '@/components/StandardTable'
-import { fetchCollection } from '@/utils'
 
 export default {
   name: 'Index',
@@ -70,7 +69,7 @@ export default {
     StandardTable
   },
   async beforeRouteEnter (to, from, next) {
-    const resp = await fetchCollection(Banner)
+    const resp = await Banner.customPaginate()
     to.meta['collection'] = resp.data
     to.meta['pagination'] = resp.pagination
     return next()
@@ -95,7 +94,7 @@ export default {
     async fetchList () {
       this.isLoading = true
       try {
-        const resp = await fetchCollection(Banner, {
+        const resp = await Banner.customPaginate({
           page: this.pagination.currentPage,
           perPage: this.pagination.perPage,
           sortColumn: this.sorter.sortColumn,
