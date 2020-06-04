@@ -32,10 +32,6 @@
         <div class="form-group mb-3 row">
           <label class="form-label col-3 col-form-label">Duration</label>
           <div class="col">
-            <b-datepicker menu-class="w-50" calendar-width="100%" locale="ja"
-              v-model.trim="filter.duration"
-              :date-format-options="{ year: 'numeric', day: 'numeric', month: 'numeric' }"
-            />
           </div>
         </div>
         <div class="form-footer d-flex justify-content-end">

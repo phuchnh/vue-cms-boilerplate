@@ -7,6 +7,11 @@ import router from './router'
 import store from './store'
 import './plugins'
 import './utils/filters'
+
+// Styles
+import './assets/less/app.less'
+import './assets/css/tabler-buttons.min.css'
+import './assets/css/tabler.min.css'
 import './assets/scss/app.scss'
 
 Vue.config.productionTip = false

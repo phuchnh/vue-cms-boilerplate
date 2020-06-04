@@ -6,16 +6,36 @@
       </router-link>
     </div>
     <Search @filter-changed="onFilterChange($event)"/>
-    <StandardTable
-      :columns="fields"
-      :data-source="collection"
-      :current-page="pagination.currentPage"
-      :total-records="pagination.total"
-      :per-page="pagination.perPage"
-      :sort-column="sortBy"
-      :sort-value="sortDesc"
-      :is-loading="isLoading"
-    >
+    <StandardTable :data-source="collection" :loading="isLoading">
+      <a-table-column key="thumbnail" title="Image">
+        <template slot-scope="record">
+          <img v-lazy="record.thumbnail.url" :alt="record.title" class="rounded" :width="100" :height="100">
+        </template>
+      </a-table-column>
+      <a-table-column key="title" title="Title" :sorter="true">
+        <template slot-scope="record">
+          <b>{{record.title}}</b>
+        </template>
+      </a-table-column>
+      <a-table-column key="duration" title="Duration">
+        <template slot-scope="record">
+          <div class="row row-sm align-items-center" style="width: 300px">
+            <div class="col">{{record.publish_start_datetime}}</div>
+            <div class="col-auto">~</div>
+            <div class="col">{{record.publish_end_datetime}}</div>
+          </div>
+        </template>
+      </a-table-column>
+      <a-table-column key="status" title="Status" :sorter="true">
+        <template slot-scope="record">
+          <i>{{record.is_active}}</i>
+        </template>
+      </a-table-column>
+      <a-table-column key="updated" title="Updated" :sorter="true">
+        <template slot-scope="record">
+          <i>{{record.updated_at | formatDate('LLL')}}</i>
+        </template>
+      </a-table-column>
     </StandardTable>
   </div>
 </template>
@@ -37,7 +57,7 @@ export default {
       query: {
         page: 1,
         perPage: PER_PAGE,
-        'fields[banners]': 'thumbnail,title,publish_start_datetime,publish_end_datetime,is_active,updated_at',
+        'fields[banners]': 'id,thumbnail,title,publish_start_datetime,publish_end_datetime,is_active,updated_at',
         'sortBy[updated_at]': 'desc'
       }
     })
@@ -48,14 +68,6 @@ export default {
   data () {
     return {
       isLoading: false,
-      fields: [
-        { key: 'thumbnail', label: '' },
-        { key: 'title', label: 'Title', sortable: true },
-        { key: 'duration', label: 'Duration' },
-        { key: 'is_active', label: 'Status', sortable: true },
-        { key: 'updated_at', label: 'Updated', sortable: true },
-        { key: 'actions', label: '' }
-      ],
       collection: [],
       pagination: {},
       filter: {},
@@ -96,7 +108,7 @@ export default {
           query: {
             page: this.pagination.currentPage,
             perPage: this.pagination.perPage,
-            'fields[banners]': 'thumbnail,title,publish_start_datetime,publish_end_datetime,is_active,updated_at',
+            'fields[banners]': 'id,thumbnail,title,publish_start_datetime,publish_end_datetime,is_active,updated_at',
             [sortBy]: sortDesc,
             ...filter
           }
