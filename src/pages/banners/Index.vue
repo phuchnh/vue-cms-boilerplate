@@ -61,24 +61,7 @@
 import Banner from '@/models/Banner'
 import Search from './Search'
 import StandardTable from '@/components/StandardTable'
-import { PER_PAGE } from '@/config'
-import { serialize } from '@/utils'
-
-const fetchCollection = async (options = {}) => {
-  const page = options.page || 1
-  const perPage = options.perPage || PER_PAGE
-  const sortColumn = options.sortColumn || 'updated_at'
-  const sortDirection = options.sortDirection || 'desc'
-  const query = serialize({
-    page,
-    perPage,
-    sortBy: { [sortColumn]: sortDirection },
-    fields: {
-      banners: ['id', 'thumbnail', 'title', 'publish_start_datetime', 'publish_end_datetime', 'is_active', 'updated_at'].join(',')
-    }
-  })
-  return Banner.paginate({ query })
-}
+import { fetchCollection } from '@/utils'
 
 export default {
   name: 'Index',
@@ -87,7 +70,7 @@ export default {
     StandardTable
   },
   async beforeRouteEnter (to, from, next) {
-    const resp = await fetchCollection()
+    const resp = await fetchCollection(Banner)
     to.meta['collection'] = resp.data
     to.meta['pagination'] = resp.pagination
     return next()
@@ -112,7 +95,7 @@ export default {
     async fetchList () {
       this.isLoading = true
       try {
-        const resp = await fetchCollection({
+        const resp = await fetchCollection(Banner, {
           page: this.pagination.currentPage,
           perPage: this.pagination.perPage,
           sortColumn: this.sorter.sortColumn,
