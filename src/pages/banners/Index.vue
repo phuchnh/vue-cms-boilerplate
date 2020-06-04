@@ -5,11 +5,28 @@
         Create New Banner
       </router-link>
     </div>
-    <Search @filter-changed="onFilterChange($event)"/>
-    <StandardTable :data-source="collection" :loading="isLoading">
+    <Search/>
+    <StandardTable
+      :data-source="collection"
+      :loading="isLoading"
+      :total="pagination.total"
+      :sort-column.sync="sorter.sortColumn"
+      :sort-direction.sync="sorter.sortDirection"
+      :current-page.sync="pagination.currentPage"
+      :per-page.sync="pagination.perPage"
+      @change="fetchList"
+    >
       <a-table-column key="thumbnail" title="Image">
         <template slot-scope="record">
-          <img v-lazy="record.thumbnail.url" :alt="record.title" class="rounded" :width="100" :height="100">
+          <div class="d-flex justify-content-center align-items-center">
+            <img
+              v-lazy="record.thumbnail.url"
+              :alt="record.title"
+              class="rounded rounded-md"
+              :width="100"
+              :height="100"
+            >
+          </div>
         </template>
       </a-table-column>
       <a-table-column key="title" title="Title" :sorter="true">
@@ -26,12 +43,12 @@
           </div>
         </template>
       </a-table-column>
-      <a-table-column key="status" title="Status" :sorter="true">
+      <a-table-column key="is_active" title="Status" :sorter="true">
         <template slot-scope="record">
           <i>{{record.is_active}}</i>
         </template>
       </a-table-column>
-      <a-table-column key="updated" title="Updated" :sorter="true">
+      <a-table-column key="updated_at" title="Updated" :sorter="true">
         <template slot-scope="record">
           <i>{{record.updated_at | formatDate('LLL')}}</i>
         </template>
@@ -45,6 +62,23 @@ import Banner from '@/models/Banner'
 import Search from './Search'
 import StandardTable from '@/components/StandardTable'
 import { PER_PAGE } from '@/config'
+import { serialize } from '@/utils'
+
+const fetchCollection = async (options = {}) => {
+  const page = options.page || 1
+  const perPage = options.perPage || PER_PAGE
+  const sortColumn = options.sortColumn || 'updated_at'
+  const sortDirection = options.sortDirection || 'desc'
+  const query = serialize({
+    page,
+    perPage,
+    sortBy: { [sortColumn]: sortDirection },
+    fields: {
+      banners: ['id', 'thumbnail', 'title', 'publish_start_datetime', 'publish_end_datetime', 'is_active', 'updated_at'].join(',')
+    }
+  })
+  return Banner.paginate({ query })
+}
 
 export default {
   name: 'Index',
@@ -53,14 +87,7 @@ export default {
     StandardTable
   },
   async beforeRouteEnter (to, from, next) {
-    const resp = await Banner.paginate({
-      query: {
-        page: 1,
-        perPage: PER_PAGE,
-        'fields[banners]': 'id,thumbnail,title,publish_start_datetime,publish_end_datetime,is_active,updated_at',
-        'sortBy[updated_at]': 'desc'
-      }
-    })
+    const resp = await fetchCollection()
     to.meta['collection'] = resp.data
     to.meta['pagination'] = resp.pagination
     return next()
@@ -71,8 +98,10 @@ export default {
       collection: [],
       pagination: {},
       filter: {},
-      sortBy: 'updated_at',
-      sortDesc: 'desc'
+      sorter: {
+        sortColumn: 'updated_at',
+        sortDirection: 'desc'
+      }
     }
   },
   created () {
@@ -80,38 +109,14 @@ export default {
     this.pagination = this.$route.meta['pagination']
   },
   methods: {
-    async onSortChange () {
-      this.pagination.currentPage = 1
-      await this.fetchList()
-    },
-    async onPageChanged ({ currentPage, perPage }) {
-      this.pagination.currentPage = currentPage
-      this.pagination.perPage = perPage
-      await this.fetchList()
-    },
-    async onFilterChange ($event) {
-      this.pagination.currentPage = 1
-      this.filter = { ...$event }
-      await this.fetchList()
-    },
     async fetchList () {
       this.isLoading = true
-      const sortBy = `sortBy[${this.sortBy || 'updated_at'}]`
-      const sortDesc = this.sortDesc ? 'desc' : 'asc'
-      const filter = {}
-      for (let property in this.filter) {
-        filter[`filter[${property}]`] = this.filter[property]
-      }
-
       try {
-        const resp = await Banner.paginate({
-          query: {
-            page: this.pagination.currentPage,
-            perPage: this.pagination.perPage,
-            'fields[banners]': 'id,thumbnail,title,publish_start_datetime,publish_end_datetime,is_active,updated_at',
-            [sortBy]: sortDesc,
-            ...filter
-          }
+        const resp = await fetchCollection({
+          page: this.pagination.currentPage,
+          perPage: this.pagination.perPage,
+          sortColumn: this.sorter.sortColumn,
+          sortDirection: this.sorter.sortDirection
         })
         this.collection = resp.data
         this.pagination = resp.pagination
