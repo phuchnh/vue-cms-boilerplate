@@ -35,7 +35,7 @@ const beforeEach = async (to, from, next) => {
 const afterEach = async () => {
   router.app.$Progress.finish()
   await router.app.$nextTick()
-  document.getElementById('loading').style.display = 'none'
+  store.commit(types.END_LOADING)
 }
 
 router.beforeEach(beforeEach)

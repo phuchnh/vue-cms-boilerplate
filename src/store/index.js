@@ -10,7 +10,8 @@ export default new Vuex.Store({
     return {
       layout: 'default',
       profile: null,
-      token: Cookie.get('token')
+      token: Cookie.get('token'),
+      loadingOverlay: false
     }
   },
   getters: {
@@ -19,6 +20,14 @@ export default new Vuex.Store({
     layout: state => state.layout || 'default'
   },
   mutations: {
+    [types.START_LOADING] (state) {
+      state.loadingOverlay = true
+      document.getElementById('loading').style.opacity = 'block'
+    },
+    [types.END_LOADING] (state) {
+      state.loadingOverlay = false
+      document.getElementById('loading').style.display = 'none'
+    },
     [types.SET_LAYOUT] (state, { layout }) {
       state.layout = layout
     },

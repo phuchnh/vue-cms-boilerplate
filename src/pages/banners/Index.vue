@@ -5,10 +5,19 @@
         Create New Banner
       </router-link>
     </div>
-    <Search/>
+    <Search
+      :filter.sync="filter"
+      :page.sync="pagination.currentPage"
+      @onSearch="fetchList"
+    >
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-control" v-model.trim="filter.title">
+      </div>
+    </Search>
     <StandardTable
       :data-source="collection"
-      :loading="isLoading"
+      :loading="loading"
       :total="pagination.total"
       :sort-column.sync="sorter.sortColumn"
       :sort-direction.sync="sorter.sortDirection"
@@ -59,7 +68,7 @@
 
 <script>
 import Banner from '@/models/Banner'
-import Search from './Search'
+import Search from '@/components/Search'
 import StandardTable from '@/components/StandardTable'
 
 export default {
@@ -69,14 +78,14 @@ export default {
     StandardTable
   },
   async beforeRouteEnter (to, from, next) {
-    const resp = await Banner.customPaginate()
+    const resp = await Banner.paginateCustom()
     to.meta['collection'] = resp.data
     to.meta['pagination'] = resp.pagination
     return next()
   },
   data () {
     return {
-      isLoading: false,
+      loading: false,
       collection: [],
       pagination: {},
       filter: {},
@@ -92,19 +101,20 @@ export default {
   },
   methods: {
     async fetchList () {
-      this.isLoading = true
+      this.loading = true
       try {
-        const resp = await Banner.customPaginate({
+        const resp = await Banner.paginateCustom({
           page: this.pagination.currentPage,
           perPage: this.pagination.perPage,
           sortColumn: this.sorter.sortColumn,
-          sortDirection: this.sorter.sortDirection
+          sortDirection: this.sorter.sortDirection,
+          filter: this.filter
         })
         this.collection = resp.data
         this.pagination = resp.pagination
-        this.isLoading = false
+        this.loading = false
       } catch (e) {
-        this.isLoading = false
+        this.loading = false
       }
     }
   }

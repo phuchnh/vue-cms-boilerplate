@@ -1,5 +1,7 @@
 <template>
-  <router-view v-if="true"/>
+  <transition name="page" mode="out-in">
+    <router-view v-if="true"/>
+  </transition>
 </template>
 
 <script>

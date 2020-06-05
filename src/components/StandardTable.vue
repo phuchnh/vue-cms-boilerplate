@@ -2,6 +2,7 @@
   <div class="card card-sm shadow my-4">
     <div class="card-body p-0">
       <a-table
+        :tableLayout="'auto'"
         :data-source="dataSource"
         :loading="loading"
         :row-key="record => record.id"
@@ -19,6 +20,7 @@ import { PER_PAGE, PER_PAGE_OPTIONS } from '@/config'
 
 export default {
   name: 'StandardTable',
+  inheritAttrs: false,
   props: {
     sortColumn: {type: String, required: false, default: null},
     sortDirection: {type: String, required: false, default: null},
@@ -54,7 +56,8 @@ export default {
         page: pagination.current,
         perPage: pagination.pageSize,
         sortColumn: sorter.columnKey,
-        sortDirection: this.getSortDirection(sorter.order)
+        sortDirection: this.getSortDirection(sorter.order),
+        filter: this.filter
       })
     },
     getSortDirection (value) {

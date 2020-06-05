@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <transition name="fade" mode="out-in">
+    <transition name="page" mode="out-in">
       <router-view/>
     </transition>
   </div>
