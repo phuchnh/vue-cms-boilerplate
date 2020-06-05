@@ -8,11 +8,15 @@
     <Search
       :filter.sync="filter"
       :page.sync="pagination.currentPage"
-      @onSearch="fetchList"
+      @onSearch="fetchCollection"
     >
       <div class="mb-3">
         <label class="form-label">Title</label>
         <input type="text" class="form-control" v-model.trim="filter.title">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Status</label>
+        <input type="text" class="form-control" v-model.trim="filter.status">
       </div>
     </Search>
     <StandardTable
@@ -23,7 +27,7 @@
       :sort-direction.sync="sorter.sortDirection"
       :current-page.sync="pagination.currentPage"
       :per-page.sync="pagination.perPage"
-      @change="fetchList"
+      @change="fetchCollection"
     >
       <a-table-column key="thumbnail" title="Image">
         <template slot-scope="record">
@@ -85,6 +89,22 @@ export default {
   components: {
     Search,
     StandardTable
+  },
+  data () {
+    return {
+      loading: false,
+      collection: [],
+      pagination: {},
+      filter: {},
+      sorter: {
+        sortColumn: 'updated_at',
+        sortDirection: 'desc'
+      }
+    }
+  },
+  created () {
+    this.collection = this.$route.meta['collection']
+    this.pagination = this.$route.meta['pagination']
   }
 }
 </script>

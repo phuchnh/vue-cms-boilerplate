@@ -1,4 +1,4 @@
-export function StandardTableMixin (model) {
+export const StandardTableMixin = (model) => {
   return {
     async beforeRouteEnter (to, from, next) {
       const resp = await model.paginateCustom()
@@ -6,24 +6,8 @@ export function StandardTableMixin (model) {
       to.meta['pagination'] = resp.pagination
       return next()
     },
-    data () {
-      return {
-        loading: false,
-        collection: [],
-        pagination: {},
-        filter: {},
-        sorter: {
-          sortColumn: 'updated_at',
-          sortDirection: 'desc'
-        }
-      }
-    },
-    created () {
-      this.collection = this.$route.meta['collection']
-      this.pagination = this.$route.meta['pagination']
-    },
     methods: {
-      async fetchList () {
+      async fetchCollection () {
         this.loading = true
         try {
           const resp = await model.paginateCustom({
