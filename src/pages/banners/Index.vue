@@ -62,6 +62,13 @@
           <i>{{record.updated_at | formatDate('LLL')}}</i>
         </template>
       </a-table-column>
+      <a-table-column key="action">
+        <template slot-scope="record">
+          <router-link :to="{name: 'banners.edit', params: {id: record.id}}" class="btn btn-success" tag="button">
+            Edit
+          </router-link>
+        </template>
+      </a-table-column>
     </StandardTable>
   </div>
 </template>
@@ -70,53 +77,14 @@
 import Banner from '@/models/Banner'
 import Search from '@/components/Search'
 import StandardTable from '@/components/StandardTable'
+import { StandardTableMixin } from '@/mixins/StandardTableMixin'
 
 export default {
   name: 'Index',
+  mixins: [StandardTableMixin(Banner)],
   components: {
     Search,
     StandardTable
-  },
-  async beforeRouteEnter (to, from, next) {
-    const resp = await Banner.paginateCustom()
-    to.meta['collection'] = resp.data
-    to.meta['pagination'] = resp.pagination
-    return next()
-  },
-  data () {
-    return {
-      loading: false,
-      collection: [],
-      pagination: {},
-      filter: {},
-      sorter: {
-        sortColumn: 'updated_at',
-        sortDirection: 'desc'
-      }
-    }
-  },
-  created () {
-    this.collection = this.$route.meta['collection']
-    this.pagination = this.$route.meta['pagination']
-  },
-  methods: {
-    async fetchList () {
-      this.loading = true
-      try {
-        const resp = await Banner.paginateCustom({
-          page: this.pagination.currentPage,
-          perPage: this.pagination.perPage,
-          sortColumn: this.sorter.sortColumn,
-          sortDirection: this.sorter.sortDirection,
-          filter: this.filter
-        })
-        this.collection = resp.data
-        this.pagination = resp.pagination
-        this.loading = false
-      } catch (e) {
-        this.loading = false
-      }
-    }
   }
 }
 </script>

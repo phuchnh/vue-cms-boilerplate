@@ -2,6 +2,7 @@
   <div id="UpdateBanner">
     <h1>UpdateBanner</h1>
     <Form :value="model"/>
+    <button @click="update" class="btn btn-primary">Update</button>
   </div>
 </template>
 
@@ -25,6 +26,13 @@ export default {
   },
   created () {
     this.model = this.$route.meta['model']
+  },
+  methods: {
+    update () {
+      this.model.update({
+        title: '123'
+      })
+    }
   }
 }
 </script>
