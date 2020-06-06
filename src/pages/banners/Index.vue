@@ -78,33 +78,21 @@
 </template>
 
 <script>
-import Banner from '@/models/Banner'
+// import Banner from '@/models/Banner'
 import Search from '@/components/Search'
 import StandardTable from '@/components/StandardTable'
-import { StandardTableMixin } from '@/mixins/StandardTableMixin'
+import StandardList from '@/components/StandardList'
+// import { StandardTableMixin } from '@/mixins/StandardTableMixin'
 
 export default {
   name: 'Index',
-  mixins: [StandardTableMixin(Banner)],
+  extends: StandardList,
   components: {
-    Search,
-    StandardTable
-  },
-  data () {
-    return {
-      loading: false,
-      collection: [],
-      pagination: {},
-      filter: {},
-      sorter: {
-        sortColumn: 'updated_at',
-        sortDirection: 'desc'
-      }
-    }
+    StandardTable,
+    Search
   },
   created () {
-    this.collection = this.$route.meta['collection']
-    this.pagination = this.$route.meta['pagination']
+    console.log('from child')
   }
 }
 </script>
