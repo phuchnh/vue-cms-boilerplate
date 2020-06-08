@@ -5,11 +5,7 @@
         Create New Banner
       </router-link>
     </div>
-    <Search
-      :filter.sync="filter"
-      :page.sync="pagination.currentPage"
-      @onSearch="fetchCollection"
-    >
+    <Search :filter.sync="filter" :page.sync="pagination.currentPage" @onSearch="fetchCollection">
       <div class="mb-3">
         <label class="form-label">Title</label>
         <input type="text" class="form-control" v-model.trim="filter.title">

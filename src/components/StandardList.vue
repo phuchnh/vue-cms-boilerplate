@@ -3,6 +3,9 @@ import Vue from 'vue'
 export default {
   name: 'StandardList',
   async beforeRouteEnter (to, from, next) {
+    if (Vue.prototype.$model === undefined) {
+      throw new Error('You should override model in component. Example: Vue.prototype.$model = Banner')
+    }
     const resp = await Vue.prototype.$model.paginateCustom()
     to.meta['collection'] = resp.data
     to.meta['pagination'] = resp.pagination
@@ -14,6 +17,7 @@ export default {
       collection: [],
       pagination: {},
       filter: {},
+      fields: {},
       sorter: {
         sortColumn: 'updated_at',
         sortDirection: 'desc'
@@ -33,7 +37,8 @@ export default {
           perPage: this.pagination.perPage,
           sortColumn: this.sorter.sortColumn,
           sortDirection: this.sorter.sortDirection,
-          filter: this.filter
+          filter: this.filter,
+          fields: this.fields
         })
         this.collection = resp.data
         this.pagination = resp.pagination

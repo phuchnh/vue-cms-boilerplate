@@ -48,6 +48,9 @@ export default {
   },
   methods: {
     handleTableChange (pagination, filters, sorter) {
+      if (this.detectSortChange(sorter)) {
+        pagination.current = 1 // Reset pagination or sort change
+      }
       this.$emit('update:currentPage', pagination.current)
       this.$emit('update:perPage', pagination.pageSize)
       this.$emit('update:sortColumn', sorter.columnKey)
@@ -56,13 +59,28 @@ export default {
         page: pagination.current,
         perPage: pagination.pageSize,
         sortColumn: sorter.columnKey,
-        sortDirection: this.getSortDirection(sorter.order),
-        filter: this.filter
+        sortDirection: this.getSortDirection(sorter.order)
       })
     },
     getSortDirection (value) {
-      const sortDirections = { ascend: 'asc', descend: 'desc' }
-      return sortDirections[value] || null
+      switch (value) {
+        case 'ascend':
+          return 'asc'
+        case 'asc':
+          return 'ascend'
+        case 'descend':
+          return 'desc'
+        case 'desc':
+          return 'descend'
+        default:
+          return null
+      }
+    },
+    detectSortChange ({ columnKey, order }) {
+      if (!columnKey || !order) {
+        return false
+      }
+      return columnKey !== this.sortColumn || order !== this.getSortDirection(this.sortDirection)
     }
   }
 }
