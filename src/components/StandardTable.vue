@@ -22,14 +22,14 @@ export default {
   name: 'StandardTable',
   inheritAttrs: false,
   props: {
-    sortColumn: {type: String, required: false, default: null},
-    sortDirection: {type: String, required: false, default: null},
-    total: {type: Number, required: true, default: 0},
-    currentPage: {type: Number, required: true, default: 0},
-    perPage: {type: Number, required: true, default: PER_PAGE},
-    loading: {type: Boolean, required: false, default: false},
-    dataSource: {type: Array, required: true, default: () => []},
-    pageSizeOptions: {type: Array, default: () => PER_PAGE_OPTIONS.map(item => item.toString())}
+    sortColumn: { type: String, required: false, default: null },
+    sortDirection: { type: String, required: false, default: null },
+    total: { type: Number, required: true, default: 0 },
+    currentPage: { type: Number, required: true, default: 0 },
+    perPage: { type: Number, required: true, default: PER_PAGE },
+    loading: { type: Boolean, required: false, default: false },
+    dataSource: { type: Array, required: true, default: () => [] },
+    pageSizeOptions: { type: Array, default: () => PER_PAGE_OPTIONS.map(item => item.toString()) }
   },
   computed: {
     pagination () {

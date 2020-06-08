@@ -28,14 +28,14 @@ export default class Model extends BaseModel {
     return isStatic ? this.make(data.data) : this.fill(data.data)
   }
 
-  static paginateCustom (options = {}) {
+  static serialize (options = {}) {
     const page = options.page || 1
     const perPage = options.perPage || PER_PAGE
     const sortColumn = options.sortColumn || 'updated_at'
     const sortDirection = options.sortDirection || 'desc'
+    const sortBy = { [sortColumn]: sortDirection }
     const filter = options.filter || {}
     const fields = options.fields || {}
-    const query = serialize({ page, perPage, filter, sortBy: { [sortColumn]: sortDirection }, fields })
-    return (new this()).request({ method: 'GET', isStatic: true, query })
+    return serialize({ page, perPage, filter, sortBy, fields })
   }
 }

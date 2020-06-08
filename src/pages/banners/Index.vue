@@ -79,7 +79,6 @@ import Banner from '@/models/Banner'
 import Search from '@/components/Search'
 import StandardTable from '@/components/StandardTable'
 import StandardList from '@/components/StandardList'
-Vue.prototype.$model = Banner // Important! Override current model
 
 export default {
   name: 'Index',
@@ -87,6 +86,22 @@ export default {
   components: {
     StandardTable,
     Search
+  },
+  async beforeRouteEnter (to, from, next) {
+    Vue.prototype.$model = Banner
+    const resp = await Banner.paginate({
+      query: Banner.serialize({
+        fields: { banners: Banner.fields.join(',') }
+      })
+    })
+    // Shared data via route meta
+    to.meta.collection = resp.data
+    to.meta.pagination = resp.pagination
+    return next()
+  },
+  created () {
+    this.collection = this.$route.meta.collection
+    this.pagination = this.$route.meta.pagination
   }
 }
 </script>
