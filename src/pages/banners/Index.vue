@@ -88,20 +88,29 @@ export default {
     Search
   },
   async beforeRouteEnter (to, from, next) {
+    // !Important. See in StandardList#fetchCollection
     Vue.prototype.$model = Banner
+
+    // Fetch needed data before component render
     const resp = await Banner.paginate({
-      query: Banner.serialize({
+      query: Banner.queryBuilder({
         fields: { banners: Banner.fields.join(',') }
       })
     })
+
     // Shared data via route meta
     to.meta.collection = resp.data
     to.meta.pagination = resp.pagination
+
+    // Your custom logic
     return next()
   },
   created () {
+    // Receive data via route meta
     this.collection = this.$route.meta.collection
     this.pagination = this.$route.meta.pagination
+
+    // Your custom logic
   }
 }
 </script>

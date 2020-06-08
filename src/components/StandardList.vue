@@ -19,7 +19,7 @@ export default {
       this.loading = true
       try {
         const resp = await this.$model.paginate({
-          query: this.$model.serialize({
+          query: this.$model.queryBuilder({
             fields: { banners: this.$model.fields.join(',') },
             page: this.pagination.currentPage,
             perPage: this.pagination.perPage,

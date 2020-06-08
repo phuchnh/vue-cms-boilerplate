@@ -10,16 +10,12 @@ export default class Model extends BaseModel {
   }
 
   makeRequest ({ method, url, data, query }) {
-    return axios({ method, url, data, params: query })
+    return axios({ method, url, data, params: serialize(query) })
   }
 
   afterRequest ({ data }, { action, isStatic }) {
     switch (action) {
       case 'custom':
-        if (data.hasOwnProperty('pagination')) {
-          data.data = this.make(data.data)
-          return data
-        }
         return data
       case 'paginate':
         data.data = this.make(data.data)
@@ -28,7 +24,7 @@ export default class Model extends BaseModel {
     return isStatic ? this.make(data.data) : this.fill(data.data)
   }
 
-  static serialize (options = {}) {
+  static queryBuilder (options = {}) {
     const page = options.page || 1
     const perPage = options.perPage || PER_PAGE
     const sortColumn = options.sortColumn || 'updated_at'
@@ -36,6 +32,6 @@ export default class Model extends BaseModel {
     const sortBy = { [sortColumn]: sortDirection }
     const filter = options.filter || {}
     const fields = options.fields || {}
-    return serialize({ page, perPage, filter, sortBy, fields })
+    return { page, perPage, filter, sortBy, fields }
   }
 }
