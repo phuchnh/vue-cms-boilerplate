@@ -78,11 +78,12 @@
 </template>
 
 <script>
-// import Banner from '@/models/Banner'
+import Vue from 'vue'
+import Banner from '@/models/Banner'
 import Search from '@/components/Search'
 import StandardTable from '@/components/StandardTable'
 import StandardList from '@/components/StandardList'
-// import { StandardTableMixin } from '@/mixins/StandardTableMixin'
+Vue.prototype.$model = Banner // Important! Override current model
 
 export default {
   name: 'Index',
@@ -90,9 +91,6 @@ export default {
   components: {
     StandardTable,
     Search
-  },
-  created () {
-    console.log('from child')
   }
 }
 </script>

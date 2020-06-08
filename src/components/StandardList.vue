@@ -1,10 +1,9 @@
 <script>
-import Banner from '@/models/Banner'
-
+import Vue from 'vue'
 export default {
   name: 'StandardList',
   async beforeRouteEnter (to, from, next) {
-    const resp = await Banner.paginateCustom()
+    const resp = await Vue.prototype.$model.paginateCustom()
     to.meta['collection'] = resp.data
     to.meta['pagination'] = resp.pagination
     return next()
@@ -24,13 +23,12 @@ export default {
   created () {
     this.collection = this.$route.meta['collection']
     this.pagination = this.$route.meta['pagination']
-    console.log('from parent')
   },
   methods: {
     async fetchCollection () {
       this.loading = true
       try {
-        const resp = await Banner.paginateCustom({
+        const resp = await this.$model.paginateCustom({
           page: this.pagination.currentPage,
           perPage: this.pagination.perPage,
           sortColumn: this.sorter.sortColumn,

@@ -1,7 +1,7 @@
 <template>
   <div id="UpdateBanner">
     <h1>UpdateBanner</h1>
-    <Form :value="model"/>
+    <Form :value="attributes"/>
     <button @click="update" class="btn btn-primary">Update</button>
   </div>
 </template>
@@ -21,17 +21,17 @@ export default {
   },
   data () {
     return {
-      model: null
+      model: null,
+      attributes: null
     }
   },
   created () {
     this.model = this.$route.meta['model']
+    this.attributes = this.model.getAttributes()
   },
   methods: {
     update () {
-      this.model.update({
-        title: '123'
-      })
+      this.model.update({ title: '123' })
     }
   }
 }
