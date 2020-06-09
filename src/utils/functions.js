@@ -1,3 +1,5 @@
+import lastIndexOf from 'lodash-es/lastIndexOf'
+
 export const serialize = (obj, prefix) => {
   const params = {}
   for (const p in obj) {
@@ -8,4 +10,11 @@ export const serialize = (obj, prefix) => {
     }
   }
   return params
+}
+
+export const pluralize = (noun) => {
+  if (lastIndexOf(noun, 'y') === noun.length - 1) {
+    return noun.substring(0, noun.length - 1) + 'ies'
+  }
+  return `${noun}s`
 }

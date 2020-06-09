@@ -20,7 +20,7 @@ export default {
       try {
         const resp = await this.$model.paginate({
           query: this.$model.queryBuilder({
-            fields: { banners: this.$model.fields.join(',') },
+            fields: { banners: this.$model.displayFields.join(',') },
             page: this.pagination.currentPage,
             perPage: this.pagination.perPage,
             sortColumn: this.sorter.sortColumn,

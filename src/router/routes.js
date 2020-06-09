@@ -71,5 +71,34 @@ export const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/files',
+    component: Resource,
+    children: [
+      {
+        path: '',
+        name: 'files.index',
+        component: page('files/Index.vue'),
+        beforeEnter: ResolveGuard([AuthGuard]),
+        meta: {
+          breadcrumbs: [
+            { title: 'File List', name: 'files.index' }
+          ]
+        }
+      },
+      {
+        path: '/files/upload',
+        name: 'files.upload',
+        component: page('files/Upload.vue'),
+        beforeEnter: ResolveGuard([AuthGuard]),
+        meta: {
+          breadcrumbs: [
+            { title: 'File List', name: 'files.index' },
+            { title: 'File Upload', name: 'files.upload' }
+          ]
+        }
+      }
+    ]
   }
 ]

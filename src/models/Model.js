@@ -2,11 +2,15 @@
 import { Model as BaseModel } from 'javel'
 import axios from '@/plugins/axios'
 import { PER_PAGE } from '@/config'
-import { serialize } from '@/utils'
+import { pluralize, serialize } from '@/utils'
 
 export default class Model extends BaseModel {
   baseUrl () {
     return '/api'
+  }
+
+  buildUrl ({params}) {
+    return [pluralize(this.constructor.name).toLowerCase(), ...params]
   }
 
   makeRequest ({ method, url, data, query }) {
