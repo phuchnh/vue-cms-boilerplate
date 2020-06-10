@@ -10,8 +10,10 @@
       <div class="d-flex flex-column justify-content-center align-items-center message">
         <upload-icon size="4x"/>
         <div class="text-muted">
-          <span class="btn btn-outline-secondary btn-file">Browse <input type="file" multiple @change="addFile($event)" ref="fileInput"/></span>
-          or drag file to this area to upload
+          <span class="btn btn-secondary btn-file">
+            <file-icon class="icon"/> Browse
+            <input type="file" multiple @change="addFile($event)" ref="fileInput"/>
+          </span> or drag file to this area to upload
         </div>
       </div>
     </form>
@@ -21,7 +23,7 @@
           <div class="col-auto">
             <h3 class="card-title">Upload Process</h3>
           </div>
-          <div class="col-auto ml-auto">
+          <div class="col-auto ml-auto" v-if="fileUploads.length > 1">
             <div class="btn-list">
               <button class="btn btn-sm btn-primary" @click="uploadAll">
                 <upload-icon class="icon"/>Upload All
@@ -32,14 +34,15 @@
             </div>
           </div>
         </div>
-        <div class="list-group card-list-group">
+        <div class="list list-row">
           <UploadTask
             ref="uploadTasks"
             v-for="(file, index) in fileUploads"
             :index="index"
             :file="file"
             :key="file.uid"
-            @onSuccess="fileUploads.splice($event, 1)"
+            @onSuccess="removeFile($event)"
+            @onRemove="removeFile($event)"
           />
         </div>
       </div>
@@ -48,16 +51,23 @@
 </template>
 
 <script>
-import { UploadIcon, DeleteIcon } from 'vue-feather-icons'
+import { DeleteIcon, FileIcon, UploadIcon } from 'vue-feather-icons'
 import UploadTask from './UploadTask'
 import uniqueId from 'lodash-es/uniqueId'
 
 export default {
   name: 'FileUpload',
   components: {
+    FileIcon,
     UploadIcon,
     DeleteIcon,
     UploadTask
+  },
+  props: {
+    limit: {
+      type: Number,
+      default: 10
+    }
   },
   data () {
     return {
@@ -70,10 +80,10 @@ export default {
       const input = this.$refs.fileInput
       input.type = 'text'
       input.type = 'file'
-    },
-    removeAll () {
       this.fileUploads = []
       this.isDropped = false
+    },
+    removeAll () {
       this.resetInputFile()
     },
     async uploadAll () {
@@ -84,7 +94,7 @@ export default {
       await Promise.all([...promises])
       this.resetInputFile()
     },
-    async toBase64 (file) {
+    async getDataUrl (file) {
       const reader = new FileReader()
       return new Promise((resolve, reject) => {
         reader.readAsDataURL(file)
@@ -92,17 +102,26 @@ export default {
         reader.onerror = error => reject(error)
       })
     },
+    removeFile (index) {
+      this.fileUploads.splice(index, 1)
+      if (!this.fileUploads.length) {
+        this.resetInputFile()
+      }
+    },
     async addFile (evt) {
       this.isDropped = true
       let droppedFiles = evt.target.files || evt.dataTransfer.files
       if (!droppedFiles.length) return
-      droppedFiles = [...droppedFiles].filter(file => {
-        return ['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)
-      })
+      droppedFiles = [...droppedFiles]
+        .slice(0, this.limit) // Limit file to upload
+        .filter(file => {
+          const regExp = /^image\/(jpe?g|png)$/g
+          return regExp.test(file.type)
+        })
       for (let file of droppedFiles) {
         file = Object.assign(file, {
           uid: uniqueId('fileUpload_'),
-          dataURL: await this.toBase64(file)
+          dataURL: await this.getDataUrl(file)
         })
         this.fileUploads.push(file)
       }

@@ -1,26 +1,26 @@
 <template>
-  <div class="list-group-item">
-    <div class="row row-sm align-items-center">
-      <div class="col-auto">
-        <img :alt="file.name" class="avatar" v-lazy="file.dataURL">
+  <div class="list-item">
+    <!-- File Preview -->
+    <div class="avatar avatar-lg" v-lazy:background-image="file.dataURL"></div>
+    <div class="text-truncate w-50">
+      <!-- File Name -->
+      <b class="text-body d-block">{{ file.name }}</b>
+      <!-- File Size -->
+      <i class="mt-n1">{{ file.size | formatBytes }}</i>
+      <!-- File Progress -->
+      <div class="d-block mt-n1">
+        <a-progress :percent="uploadPercentage" :stroke-color="strokeColor"/>
       </div>
-      <div class="col">{{ file.name }}</div>
-      <div class="col">
-        <a-progress :percent="uploadPercentage" :status="status"/>
-      </div>
-      <div class="col-auto">{{ file.size | formatBytes }}</div>
-      <div class="col-auto">
-        <div class="btn-list">
-          <button class="btn btn-sm btn-primary" @click="handleFileUpload">
-            <upload-icon class="icon"/>Upload
-          </button>
-          <button
-            class="btn btn-sm btn-danger"
-            @click="$emit('onFileRemove', file)"
-          >
-            <delete-icon class="icon"/>Remove
-          </button>
-        </div>
+    </div>
+    <!-- File Actions -->
+    <div class="list-item-actions show">
+      <div class="btn-list">
+        <button class="btn btn-sm btn-primary" @click="handleFileUpload" :disabled="isUploading">
+          <upload-icon class="icon"/>Upload
+        </button>
+        <button class="btn btn-sm btn-danger" @click="$emit('onRemove', index)" :disabled="isUploading">
+          <delete-icon class="icon"/>Remove
+        </button>
       </div>
     </div>
   </div>
@@ -41,27 +41,34 @@ export default {
   components: { UploadIcon, DeleteIcon, Progress },
   data () {
     return {
+      strokeColor: {
+        '0%': '#108ee9',
+        '100%': '#87d068'
+      },
       uploadPercentage: 0,
-      status: 'active',
-      isUploaded: false,
-      isRetry: false
+      state: 'active'
     }
   },
-
+  computed: {
+    isUploading () {
+      return this.state === 'uploading'
+    },
+    isError () {
+      return this.state === 'error'
+    }
+  },
   methods: {
     async handleFileUpload () {
-      this.isRetry = false
+      this.state = 'uploading'
       try {
         await this.upload(this.file)
         this.isUploaded = true
         this.$emit('onSuccess', this.index)
       } catch (error) {
-        if (error) {
-          this.uploadPercentage = 0
-          this.isRetry = true
-          this.status = 'exception'
-          this.$emit('onError', this.file)
-        }
+        this.uploadPercentage = 0
+        this.state = 'error'
+        this.$emit('onError', this.file)
+        throw error
       }
     },
 

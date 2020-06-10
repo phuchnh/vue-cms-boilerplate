@@ -36,7 +36,8 @@
             <img
               v-lazy="record.thumbnail.url"
               :alt="record.title"
-              class="avatar avatar-lg"
+              class="rounded"
+              height="100"
             >
           </div>
         </template>
@@ -48,10 +49,8 @@
       </a-table-column>
       <a-table-column key="duration" title="Duration">
         <template slot-scope="record">
-          <div class="row row-sm align-items-center" style="width: 300px">
-            <div class="col">{{record.publish_start_datetime}}</div>
-            <div class="col-auto">~</div>
-            <div class="col">{{record.publish_end_datetime}}</div>
+          <div class="text-body text-nowrap">
+            {{record.publish_start_datetime | formatDate('LLL')}} ~ {{record.publish_end_datetime | formatDate('LLL')}}
           </div>
         </template>
       </a-table-column>
@@ -67,9 +66,14 @@
       </a-table-column>
       <a-table-column key="action">
         <template slot-scope="record">
-          <router-link :to="{name: 'banners.edit', params: {id: record.id}}" class="btn btn-success" tag="button">
-            Edit
-          </router-link>
+          <div class="btn-list">
+            <router-link :to="{name: 'banners.edit', params: {id: record.id}}" class="btn btn-sm btn-success" tag="button">
+              <edit-icon class="icon"/>Edit
+            </router-link>
+            <button class="btn btn-sm btn-danger">
+              <trash-icon class="icon"/>Delete
+            </button>
+          </div>
         </template>
       </a-table-column>
     </StandardTable>
@@ -82,7 +86,7 @@ import Banner from '@/models/Banner'
 import Search from '@/components/Search'
 import StandardTable from '@/components/StandardTable'
 import StandardList from '@/components/StandardList'
-import { SearchIcon } from 'vue-feather-icons'
+import { SearchIcon, EditIcon, TrashIcon } from 'vue-feather-icons'
 
 export default {
   name: 'Index',
@@ -90,6 +94,8 @@ export default {
   components: {
     StandardTable,
     Search,
+    EditIcon,
+    TrashIcon,
     SearchIcon
   },
   data () {
