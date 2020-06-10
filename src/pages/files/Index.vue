@@ -6,6 +6,7 @@
       </router-link>
     </div>
     <StandardTable
+      ref="table"
       :data-source="collection"
       :loading="loading"
       :total="pagination.total"
@@ -15,6 +16,7 @@
       :per-page.sync="pagination.perPage"
       @change="fetchCollection"
     >
+      <!-- Thumbnail Column -->
       <a-table-column key="thumbnail" title="Thumbnail" align="center">
         <template slot-scope="record">
           <div class="d-flex justify-content-center align-items-center">
@@ -26,17 +28,20 @@
           </div>
         </template>
       </a-table-column>
-      <a-table-column key="title" title="Title" :sorter="true">
+      <!-- Title Column -->
+      <a-table-column key="title" title="Title" :sorter="true" align="center">
         <template slot-scope="record">
           <b>{{record.name}}</b>
         </template>
       </a-table-column>
-      <a-table-column key="size" title="Size" :sorter="true">
+      <!-- Size Column -->
+      <a-table-column key="size" title="Size" :sorter="true" align="center">
         <template slot-scope="record">
           <i>{{record.size | formatBytes}}</i>
         </template>
       </a-table-column>
-      <a-table-column key="updated_at" title="Updated" :sorter="true">
+      <!-- Updated At Column -->
+      <a-table-column key="updated_at" title="Updated" :sorter="true" align="center">
         <template slot-scope="record">
           <i>{{record.updated_at | formatDate('LLL')}}</i>
         </template>

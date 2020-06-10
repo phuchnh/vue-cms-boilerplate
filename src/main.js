@@ -9,9 +9,9 @@ import './plugins'
 import './utils'
 
 // Styles
-import './assets/less/app.less'
-import './assets/css/tabler-buttons.min.css'
 import './assets/css/tabler.min.css'
+import './assets/css/tabler-buttons.min.css'
+import './assets/less/app.less'
 import './assets/scss/app.scss'
 
 Vue.config.productionTip = false

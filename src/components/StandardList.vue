@@ -15,6 +15,13 @@ export default {
     }
   },
   methods: {
+    afterFetchList () {
+      if (this.$refs.table) {
+        const container = this.$refs.table.$el
+        console.log(container.scrollHeight)
+        window.sroll(0, container.scrollHeight)
+      }
+    },
     async fetchCollection () {
       this.loading = true
       try {
@@ -31,6 +38,7 @@ export default {
         this.collection = resp.data
         this.pagination = resp.pagination
         this.loading = false
+        this.afterFetchList()
       } catch (e) {
         this.loading = false
       }

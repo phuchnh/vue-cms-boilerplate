@@ -13,8 +13,8 @@ export default class Model extends BaseModel {
     return [pluralize(this.constructor.name).toLowerCase(), ...params]
   }
 
-  makeRequest ({ method, url, data, query }) {
-    return axios({ method, url, data, params: serialize(query) })
+  makeRequest ({ method, url, data, query, config = {} }) {
+    return axios({ method, url, data, params: serialize(query), ...config })
   }
 
   afterRequest ({ data }, { action, isStatic }) {

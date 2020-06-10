@@ -1,11 +1,16 @@
 <template>
   <div id="BannerIndex">
-    <div class="btn-list">
-      <router-link :to="{name: 'banners.create'}" class="btn btn-success" tag="button">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="btn-list">
+        <button class="btn btn-secondary btn-icon" @click="isSearch = !isSearch">
+          <search-icon class="icon"></search-icon>
+        </button>
+      </div>
+      <router-link :to="{name: 'banners.create'}" class="btn btn-secondary" tag="button">
         Create New Banner
       </router-link>
     </div>
-    <Search :filter.sync="filter" :page.sync="pagination.currentPage" @onSearch="fetchCollection">
+    <Search :filter.sync="filter" :page.sync="pagination.currentPage" @onSearch="fetchCollection" v-show="isSearch">
       <div class="mb-3">
         <label class="form-label">Title</label>
         <input type="text" class="form-control" v-model.trim="filter.title">
@@ -77,13 +82,20 @@ import Banner from '@/models/Banner'
 import Search from '@/components/Search'
 import StandardTable from '@/components/StandardTable'
 import StandardList from '@/components/StandardList'
+import { SearchIcon } from 'vue-feather-icons'
 
 export default {
   name: 'Index',
   extends: StandardList,
   components: {
     StandardTable,
-    Search
+    Search,
+    SearchIcon
+  },
+  data () {
+    return {
+      isSearch: false
+    }
   },
   async beforeRouteEnter (to, from, next) {
     // !Important. See in StandardList#fetchCollection
