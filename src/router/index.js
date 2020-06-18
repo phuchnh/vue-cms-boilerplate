@@ -9,7 +9,16 @@ Vue.use(Router)
 
 const router = new Router({
   mode: 'history',
-  routes
+  routes,
+  // Simulate native-like scroll behavior when navigating to a new
+  // route and using back/forward buttons.
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  }
 })
 
 /**

@@ -63,11 +63,11 @@ export default {
       try {
         await this.upload(this.file)
         this.isUploaded = true
-        this.$emit('onSuccess', this.index)
+        this.$emit('onUploadSuccess', this.index)
       } catch (error) {
         this.uploadPercentage = 0
         this.state = 'error'
-        this.$emit('onError', this.file)
+        this.$emit('onUploadError', this.file)
         throw error
       }
     },

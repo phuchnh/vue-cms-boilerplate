@@ -4,6 +4,7 @@
       <div class="row align-items-center">
         <div class="col-auto">
           <h2 class="page-title">{{title}}</h2>
+          <file-dialog/>
         </div>
       </div>
     </div>

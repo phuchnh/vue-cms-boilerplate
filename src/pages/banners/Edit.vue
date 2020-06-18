@@ -1,8 +1,10 @@
 <template>
   <div id="UpdateBanner">
-    <h1>UpdateBanner</h1>
     <Form :value="attributes"/>
-    <button @click="update" class="btn btn-primary">Update</button>
+    <div class="btn-list">
+      <button @click="update" class="btn btn-primary">Update</button>
+      <router-link :to="{name: 'banners.index'}" class="btn btn-secondary" tag="button">Cancel</router-link>
+    </div>
   </div>
 </template>
 

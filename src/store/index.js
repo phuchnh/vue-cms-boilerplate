@@ -22,7 +22,7 @@ export default new Vuex.Store({
   mutations: {
     [types.START_LOADING] (state) {
       state.loadingOverlay = true
-      document.getElementById('loading').style.opacity = 'block'
+      document.getElementById('loading').style.display = 'block'
     },
     [types.END_LOADING] (state) {
       state.loadingOverlay = false

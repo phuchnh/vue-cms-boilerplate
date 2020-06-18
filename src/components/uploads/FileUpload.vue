@@ -41,7 +41,7 @@
             :index="index"
             :file="file"
             :key="file.uid"
-            @onSuccess="removeFile($event)"
+            @onUploadSuccess="onUploadSuccess($event)"
             @onRemove="removeFile($event)"
           />
         </div>
@@ -93,6 +93,7 @@ export default {
       }
       await Promise.all([...promises])
       this.resetInputFile()
+      this.$emit('onUploaded')
     },
     async getDataUrl (file) {
       const reader = new FileReader()
@@ -101,6 +102,13 @@ export default {
         reader.onload = () => resolve(reader.result)
         reader.onerror = error => reject(error)
       })
+    },
+    onUploadSuccess (index) {
+      this.removeFile(index)
+      if (!this.fileUploads.length) {
+        this.resetInputFile()
+        this.$emit('onUploaded')
+      }
     },
     removeFile (index) {
       this.fileUploads.splice(index, 1)
@@ -135,7 +143,7 @@ export default {
     position: relative;
     border: 2px dashed #a8aeb7;
     border-radius: 8px;
-    background: #f5f7fb;
+    background: #ffffff;
     padding: 48px;
 
     .message {
@@ -159,7 +167,7 @@ export default {
       filter: alpha(opacity=0);
       opacity: 0;
       outline: none;
-      background: white;
+      background: #ffffff;
       cursor: inherit;
       display: block;
     }

@@ -33,12 +33,7 @@
       <a-table-column key="thumbnail" title="Thumbnail" align="center">
         <template slot-scope="record">
           <div class="d-flex justify-content-center align-items-center">
-            <img
-              v-lazy="record.thumbnail.url"
-              :alt="record.title"
-              class="rounded"
-              height="100"
-            >
+            <img v-lazy="record.thumbnail.url" :alt="record.title" class="avatar avatar-lg" :height="100" :idth="100">
           </div>
         </template>
       </a-table-column>

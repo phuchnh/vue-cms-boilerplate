@@ -14,7 +14,15 @@ export default class Model extends BaseModel {
   }
 
   makeRequest ({ method, url, data, query, config = {} }) {
-    return axios({ method, url, data, params: serialize(query), ...config })
+    return axios({ method, url, data, params: query, ...config })
+  }
+
+  beforeRequest (request) {
+    if (request.query) {
+      // Serialize params
+      request.query = serialize(request.query)
+    }
+    return request
   }
 
   afterRequest ({ data }, { action, isStatic }) {
