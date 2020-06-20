@@ -1,35 +1,28 @@
 <template>
   <div id="FileExplorer">
-    <div class="row p-4">
-      <div class="col-12">
-        <div class="d-flex justify-content-center align-items-center p-3">
-          <a-pagination ref="pagination"
-            v-model="pagination.currentPage"
-            :defaultPageSize="15"
-            :total.sync="pagination.total"
-            @change="handlePageChange($event)"
-          />
-        </div>
-      </div>
-      <div class="col-sm-4 col-md-3"
-        v-for="(file, index) in collection"
-        :key="index"
-        @click="selectFile(file)"
-      >
-        <div class="card" :class="isSelected(file)">
-          <div class="d-block">
-            <img v-lazy="file.url" class="card-img-top object-cover" :alt="file.name" :height="150">
+    <div class="container-fluid p-0">
+      <div class="row p-4">
+        <div class="col-sm-6 col-md-4 col-lg-2"
+          v-for="(file, index) in collection"
+          :key="index"
+          @click="selectFile(file)"
+        >
+          <div class="card card-sm" :class="isSelected(file)">
+            <div class="d-block">
+              <img v-lazy="file.url" class="card-img-top object-cover" :alt="file.name" :height="150">
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-12">
-        <div class="d-flex justify-content-center align-items-center p-3">
-          <a-pagination ref="pagination"
-            v-model="pagination.currentPage"
-            :defaultPageSize="15"
-            :total.sync="pagination.total"
-            @change="handlePageChange($event)"
-          />
+        <div class="col-12">
+          <div class="d-flex justify-content-center align-items-center p-3">
+            <a-pagination
+              :default-current="paginator.currentPage"
+              :pageSize.sync="pagination.perPage"
+              :total.sync="pagination.total"
+              @change="handlePageChange($event)"
+              showLessItems
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -60,7 +53,7 @@ export default {
       this.loading = true
       const query = File.queryBuilder({
         ...options,
-        perPage: 12,
+        perPage: 18,
         fields: { files: File.displayFields.join(',') }
       })
       try {
@@ -69,7 +62,7 @@ export default {
         this.pagination = resp.pagination
       } catch (e) {}
     },
-    isSelected: (item) => {
+    isSelected (item) {
       if (!this.selectedItem) {
         return
       }
@@ -86,6 +79,9 @@ export default {
 
 <style scoped lang="scss">
   #FileExplorer {
+    .card-active {
+      outline: 3px dotted #206bc4;
+    }
     .ant-tabs-nav-container {
       padding: 0 !important;
     }

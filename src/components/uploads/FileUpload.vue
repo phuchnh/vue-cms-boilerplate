@@ -17,7 +17,7 @@
         </div>
       </div>
     </form>
-    <div class="card card-sm shadow mt-4" v-if="fileUploads.length">
+    <div class="card card-sm mt-4" v-if="fileUploads.length">
       <div class="card-body p-0">
         <div class="row align-items-center p-3">
           <div class="col-auto">
@@ -143,7 +143,7 @@ export default {
     position: relative;
     border: 2px dashed #a8aeb7;
     border-radius: 8px;
-    background: #ffffff;
+    background: transparent;
     padding: 48px;
 
     .message {
